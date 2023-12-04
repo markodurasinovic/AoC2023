@@ -3,17 +3,20 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <string.h>
 
 using namespace std;
 
 vector<string> readFile();
+int getValue(string const &line);
 
 int main()
 {
-    vector<string> input = readFile();
-    for_each(input.begin(), input.end(), [](string line) {
-        cout << line << endl;
-    });
+    int res = 0;
+    for(string line : readFile()) {
+        res += getValue(line);
+    }
+    cout << res << endl;
 }
 
 vector<string> readFile() 
@@ -29,4 +32,13 @@ vector<string> readFile()
     }
 
     return result;
+}
+
+int getValue(string const &line) 
+{
+    vector<int> digit_chars;
+    for(char c : line) {
+        if(isdigit(c)) digit_chars.push_back(c - '0');
+    }
+    return (digit_chars.front() * 10) + digit_chars.back();
 }
