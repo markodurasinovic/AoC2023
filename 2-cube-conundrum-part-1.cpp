@@ -32,6 +32,7 @@ string extractId(string const &str)
 
 bool isValidHand(string str)
 {
+    // bullshit hack - see why the leading space happens
     while(str.at(0) == ' ') str.erase(0, 1);
     int spacePos = str.find(" ");
     string count = str.substr(0, spacePos);
