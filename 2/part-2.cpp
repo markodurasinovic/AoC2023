@@ -6,14 +6,10 @@
 
 using namespace std;
 
-map<string, int> maxCounts = {
-    {"red", 12}, {"green", 13}, {"blue", 14}
-};
-
 vector<string> readFile() 
 {
     vector<string> result;
-    ifstream file("2-cube-conundrum-input.txt");
+    ifstream file("input.txt");
     if(file.is_open()) {
         string line;
         while(getline(file, line)) {
@@ -30,48 +26,54 @@ string extractId(string const &str)
     return str.substr(str.find(" "));
 }
 
-bool isValidHand(string str)
+void assessHand(string str, map<string, int> &maxRequired)
 {
     int spacePos = str.find(" ");
     string count = str.substr(0, spacePos);
     string colour = str.substr(spacePos + 1);
     
-    return maxCounts[colour] >= stoi(count);
+    int c = stoi(count);
+    if(c > maxRequired[colour]) maxRequired[colour] = c;
 }
 
-bool isValidRound(string str)
+void assessRound(string str, map<string, int> &maxRequired)
 {
     size_t pos = 0;
     while((pos = str.find(",")) != string::npos) {
-        if(!isValidHand(str.substr(1, pos - 1))) return false;
+        assessHand(str.substr(1, pos - 1), maxRequired);
         str.erase(0, pos + 1);
     }
 
-    return isValidHand(str.substr(1));
+    assessHand(str.substr(1), maxRequired);
 }
 
-int isValidGame(string line)
+int getGamePower(string line)
 {
+    map<string, int> maxRequired = {
+        {"red", 0}, {"green", 0}, {"blue", 0}
+    };
+
     size_t pos = line.find(":");
     string id = extractId(line.substr(0, pos));
     line.erase(0, pos + 1);
+    
     while((pos = line.find(";")) != string::npos) {
-        if(!isValidRound(line.substr(0, pos))) return -1;
+        assessRound(line.substr(0, pos), maxRequired);
         line.erase(0, pos + 1);
     }
-    if(!isValidRound(line)) return -1;
+    assessRound(line, maxRequired);
 
-    return stoi(id);
+    int res = 1;
+    for(const auto & [key, value] : maxRequired) res *= value;
+    return res;
 }
 
 int main()
 {
     int res = 0;
     for(string line : readFile()) {
-        int id = isValidGame(line);
-        if(id > -1) {
-            res += id;
-        }
+        res += getGamePower(line);
     }
+    
     cout << res << endl;
 }

@@ -6,10 +6,14 @@
 
 using namespace std;
 
+map<string, int> maxCounts = {
+    {"red", 12}, {"green", 13}, {"blue", 14}
+};
+
 vector<string> readFile() 
 {
     vector<string> result;
-    ifstream file("2-cube-conundrum-input.txt");
+    ifstream file("input.txt");
     if(file.is_open()) {
         string line;
         while(getline(file, line)) {
@@ -26,54 +30,48 @@ string extractId(string const &str)
     return str.substr(str.find(" "));
 }
 
-void assessHand(string str, map<string, int> &maxRequired)
+bool isValidHand(string str)
 {
     int spacePos = str.find(" ");
     string count = str.substr(0, spacePos);
     string colour = str.substr(spacePos + 1);
     
-    int c = stoi(count);
-    if(c > maxRequired[colour]) maxRequired[colour] = c;
+    return maxCounts[colour] >= stoi(count);
 }
 
-void assessRound(string str, map<string, int> &maxRequired)
+bool isValidRound(string str)
 {
     size_t pos = 0;
     while((pos = str.find(",")) != string::npos) {
-        assessHand(str.substr(1, pos - 1), maxRequired);
+        if(!isValidHand(str.substr(1, pos - 1))) return false;
         str.erase(0, pos + 1);
     }
 
-    assessHand(str.substr(1), maxRequired);
+    return isValidHand(str.substr(1));
 }
 
-int getGamePower(string line)
+int isValidGame(string line)
 {
-    map<string, int> maxRequired = {
-        {"red", 0}, {"green", 0}, {"blue", 0}
-    };
-
     size_t pos = line.find(":");
     string id = extractId(line.substr(0, pos));
     line.erase(0, pos + 1);
-    
     while((pos = line.find(";")) != string::npos) {
-        assessRound(line.substr(0, pos), maxRequired);
+        if(!isValidRound(line.substr(0, pos))) return -1;
         line.erase(0, pos + 1);
     }
-    assessRound(line, maxRequired);
+    if(!isValidRound(line)) return -1;
 
-    int res = 1;
-    for(const auto & [key, value] : maxRequired) res *= value;
-    return res;
+    return stoi(id);
 }
 
 int main()
 {
     int res = 0;
     for(string line : readFile()) {
-        res += getGamePower(line);
+        int id = isValidGame(line);
+        if(id > -1) {
+            res += id;
+        }
     }
-    
     cout << res << endl;
 }

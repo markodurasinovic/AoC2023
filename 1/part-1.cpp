@@ -22,7 +22,7 @@ int main()
 vector<string> readFile() 
 {
     vector<string> result;
-    ifstream file("1-trebuchet-input.txt");
+    ifstream file("input.txt");
     if(file.is_open()) {
         string line;
         while(getline(file, line)) {
