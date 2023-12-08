@@ -1,29 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <fstream>
 #include <map>
+
+#include "../helper/file-helper.cpp"
 
 using namespace std;
 
 map<string, int> maxCounts = {
     {"red", 12}, {"green", 13}, {"blue", 14}
 };
-
-vector<string> readFile() 
-{
-    vector<string> result;
-    ifstream file("input.txt");
-    if(file.is_open()) {
-        string line;
-        while(getline(file, line)) {
-            result.push_back(line);
-        }
-        file.close();
-    }
-
-    return result;
-}
 
 string extractId(string const &str)
 {

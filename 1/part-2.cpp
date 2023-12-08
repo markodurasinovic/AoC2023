@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <fstream>
 #include <algorithm>
 #include <string.h>
 #include <map>
+
+#include "../helper/file-helper.cpp"
 
 using namespace std;
 
@@ -13,7 +14,6 @@ int findFirst(string const &line);
 int findLast(string const &line);
 int checkForDigit(string const &line, int const &i);
 int wordToDigit(string const &line, int const &i);
-vector<string> readFile();
 
 int main()
 {
@@ -74,19 +74,4 @@ int wordToDigit(string const &line, int const &i)
     }
     
     return -1;
-}
-
-vector<string> readFile() 
-{
-    vector<string> result;
-    ifstream file("input.txt");
-    if(file.is_open()) {
-        string line;
-        while(getline(file, line)) {
-            result.push_back(line);
-        }
-        file.close();
-    }
-
-    return result;
 }
