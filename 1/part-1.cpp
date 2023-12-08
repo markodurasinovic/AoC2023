@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <string.h>
 
 #include "../helper/file-helper.cpp"
